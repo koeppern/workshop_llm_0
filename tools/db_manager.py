@@ -1,14 +1,12 @@
 import sqlite3
-import yaml
+
 
 class DatabaseManager:
-	def __init__(self, db_path):
+	def __init__(self, db_path, config):
 		self.connection = sqlite3.connect(db_path)
 		self.cursor = self.connection.cursor()
 
-		# Load configuration
-		with open("config.yaml", "r") as config_file:
-			self._config = yaml.safe_load(config_file)
+		self._config = config
 
 	def create_table(self):
 		self.cursor.execute(

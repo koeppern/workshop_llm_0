@@ -1,19 +1,18 @@
 """
-Vious tools for chat completion workshop
+Various tools for chat completion workshop
 2024-09-24, Johannes Köppern
 """
-# NEVER add newlines between imports, but group by python, installled packages, own packages
+# NEVER add newlines between imports, but group by python, installed packages, own packages
 import os
 import json
-
-from pyexpat import model
-from openai import OpenAI
-from dotenv import load_dotenv
-from diskcache import Cache
 import hashlib
 import yaml
 
-from db_manager import DatabaseManager
+from openai import OpenAI
+from dotenv import load_dotenv
+from diskcache import Cache
+
+from tools.db_manager import DatabaseManager
 
 
 ## Functions and classes
@@ -21,17 +20,15 @@ class Tools:
 
 	def __init__(
 		self,
-		db_path="token_usage.db",
-		cache_path="cache",
-		config_filename="config.yaml"
+		config
 	):
+		self._config = config
+
 		load_dotenv()
 
-		self._db_path = db_path
+		self._db_path = self._config["db_path"]
 
-		self._cache_path = cache_path
-
-		self._config_filename = config_filename
+		self._cache_path = self._config["cache_path"]
 
 	def init_tools(self):
 		self._openai_api_key = os.getenv("OPENAI_API_KEY")
@@ -42,21 +39,17 @@ class Tools:
 
 		self._cache = Cache(self._cache_path)
 
-		self._db_manager = DatabaseManager(self._db_path)
-
-		self._config = self._load_config()
-
-	def _load_config(self):
-		with open(self._config_filename, "r") as f:
-			return yaml.safe_load(f)
+		self._db_manager = DatabaseManager(self._db_path, self._config)
 
 	def chat_completion(
 		self,
 		messages,
-		model="gpt-3.5-turbo",
 		use_cache=True
 	):
-		# hash messages concverting to json string and using hashlib
+		model = self._config["model"]
+		temperature = self._config["temperature"]
+
+		# hash messages converting to json string and using hashlib
 		messages_str = json.dumps(messages)
 
 		this_hash = hashlib.sha256(messages_str.encode()).hexdigest()
@@ -69,7 +62,8 @@ class Tools:
 
 		response = self._client.chat.completions.create(
 			messages=messages,
-			model=model
+			model=model,
+			temperature=temperature
 		)
 
 		# log token usage
@@ -90,7 +84,10 @@ class Tools:
 
 
 if __name__ == "__main__":
-	tools = Tools()
+	with open("config.yaml", "r") as config_file:
+		config = yaml.safe_load(config_file)
+
+	tools = Tools(config)
 
 	tools.init_tools()
 

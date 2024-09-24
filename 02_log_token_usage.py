@@ -10,41 +10,23 @@ Table token_usage:
 - prompt_tokens INTEGER
 - completion_tokens INTEGER
 """
-import os
-
-from openai import OpenAI
-from dotenv import load_dotenv
-from tools.db_manager import DatabaseManager
-
+import yaml
+from tools.tools import Tools
 
 ## Load configuration
 with open("config.yaml", "r") as config_file:
 	config = yaml.safe_load(config_file)
 
-db_path = config["db_path"]
-
 ## Application
-load_dotenv()
-api_key = os.getenv("OPENAI_API_KEY")
+tools = Tools(config)
 
-client = OpenAI(
-	api_key=api_key
-)
+tools.init_tools()
 
-db_manager = DatabaseManager(db_path)
-
-db_manager.create_table()
-
-res = client.chat.completions.create(
-	model=config["model"],
+res = tools.chat_completion(
 	messages=[{"role": "user", "content": "Hello! How are you?"}],
-	temperature=1
+	use_cache=False
 )
 
-print(res.choices[0].message.content)
+print(res)
 
-db_manager.log_token_usage(res)
-
-# db_manager.print_token_usages()
-
-db_manager.print_cummulative_token_usage()
+tools.print_cummulative_token_usage()
