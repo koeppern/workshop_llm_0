@@ -13,12 +13,9 @@ Table token_usage:
 import yaml
 from tools.tools import Tools
 
-## Load configuration
-with open("config.yaml", "r") as config_file:
-	config = yaml.safe_load(config_file)
 
 ## Application
-tools = Tools(config)
+tools = Tools()
 
 tools.init_tools()
 

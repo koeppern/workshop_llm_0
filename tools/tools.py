@@ -20,17 +20,21 @@ class Tools:
 
 	def __init__(
 		self,
-		config
+		filename_config="config.yaml"
 	):
-		self._config = config
-
 		load_dotenv()
 
-		self._db_path = self._config["db_path"]
+		self._filename_config = filename_config
+
+	def init_tools(self):
+		# load config from _filename_config
+		with open(self._filename_config, "r") as config_file:
+			self._config = yaml.safe_load(config_file)
 
 		self._cache_path = self._config["cache_path"]
 
-	def init_tools(self):
+		self._db_path = self._config["db_path"]
+
 		self._openai_api_key = os.getenv("OPENAI_API_KEY")
 
 		self._client = OpenAI(
