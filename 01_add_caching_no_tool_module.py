@@ -37,10 +37,11 @@ def chat_completion(
 	if use_cache:
 		hashed_result = cache.get(this_hash)
 		if hashed_result:
-			print("Using cached response")
+			print("## Using cached response")
+
 			return hashed_result
 
-	print("Calling OpenAI")
+	print("## Calling OpenAI")
 
 	response = client.chat.completions.create(
 		model=model,
@@ -56,7 +57,11 @@ def chat_completion(
 	return res
 
 ## Application
+load_dotenv()
 
+api_key = os.getenv("OPENAI_API_KEY")
+
+client = OpenAI(api_key=api_key)
 
 cache = Cache(cache_path)
 

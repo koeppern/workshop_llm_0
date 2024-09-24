@@ -62,6 +62,8 @@ class Tools:
 			cached_response = self._cache.get(this_hash)
 
 			if cached_response:
+				print("Using cached response")
+				
 				return cached_response
 
 		response = self._client.chat.completions.create(
