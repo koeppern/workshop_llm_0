@@ -11,18 +11,16 @@ Table token_usage:
 - completion_tokens INTEGER
 """
 import os
-import yaml
 
 from openai import OpenAI
 from dotenv import load_dotenv
-from db_manager import DatabaseManager
+from tools.db_manager import DatabaseManager
 
 
 ## Load configuration
 with open("config.yaml", "r") as config_file:
 	config = yaml.safe_load(config_file)
 
-model = config["model"]
 db_path = config["db_path"]
 
 ## Application
@@ -38,7 +36,7 @@ db_manager = DatabaseManager(db_path)
 db_manager.create_table()
 
 res = client.chat.completions.create(
-	model=model,
+	model=config["model"],
 	messages=[{"role": "user", "content": "Hello! How are you?"}],
 	temperature=1
 )

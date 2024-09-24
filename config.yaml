@@ -1,0 +1,4 @@
+model: "gpt-3.5-turbo"
+temperature: 0.5
+db_path: "token_usage.db"
+cache_path: "cache"

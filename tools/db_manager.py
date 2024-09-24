@@ -1,9 +1,14 @@
 import sqlite3
+import yaml
 
 class DatabaseManager:
 	def __init__(self, db_path):
 		self.connection = sqlite3.connect(db_path)
 		self.cursor = self.connection.cursor()
+
+		# Load configuration
+		with open("config.yaml", "r") as config_file:
+			self._config = yaml.safe_load(config_file)
 
 	def create_table(self):
 		self.cursor.execute(
@@ -23,7 +28,7 @@ class DatabaseManager:
 		self,
 		res
 	):
-		model = res.model
+		model = self._config["model"]
 		usage = res.usage
 
 		self.cursor.execute(
