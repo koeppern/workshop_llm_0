@@ -11,14 +11,19 @@ Table token_usage:
 - completion_tokens INTEGER
 """
 import os
+import yaml
 
 from openai import OpenAI
 from dotenv import load_dotenv
 from db_manager import DatabaseManager
 
 
-## Parameters
-model = "gpt-3.5-turbo"
+## Load configuration
+with open("config.yaml", "r") as config_file:
+	config = yaml.safe_load(config_file)
+
+model = config["model"]
+db_path = config["db_path"]
 
 ## Application
 load_dotenv()
@@ -28,7 +33,7 @@ client = OpenAI(
 	api_key=api_key
 )
 
-db_manager = DatabaseManager("token_usage.db")
+db_manager = DatabaseManager(db_path)
 
 db_manager.create_table()
 
