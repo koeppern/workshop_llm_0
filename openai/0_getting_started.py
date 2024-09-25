@@ -10,7 +10,6 @@ import yaml
 from openai import OpenAI
 from dotenv import load_dotenv
 
-
 ## Load configuration
 with open("config.yaml", "r") as config_file:
 	config = yaml.safe_load(config_file)
@@ -19,6 +18,7 @@ model = config["model"]
 
 ## Application
 load_dotenv()
+
 api_key = os.getenv("OPENAI_API_KEY")
 
 client = OpenAI(

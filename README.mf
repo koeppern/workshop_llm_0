@@ -1,0 +1,1 @@
+Get Google API Key: https://aistudio.google.com/app/apikey?hl=de

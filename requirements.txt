@@ -2,3 +2,5 @@ python-dotenv
 openai
 diskcache
 pyyaml
+ipykernel
+google-generativeai
